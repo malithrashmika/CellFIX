@@ -1,28 +1,26 @@
 package lk.ijse.cellfixbackend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 @Table(name = "repair_jobs")
 public class RepairJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(unique = true, nullable = false)
-    private String invoiceNumber;  // Unique identifier for repairs
 
     private String deviceModel;
     private String issueDescription;
+    @Lob
+    @Column(name = "device_photo", columnDefinition = "LONGBLOB")
+    private byte[] devicePhoto;
     private String status;  // Pending, In Progress, Completed
     private LocalDateTime createdAt;
 
@@ -44,5 +42,85 @@ public class RepairJob {
             inverseJoinColumns = @JoinColumn(name = "inventory_id")
     )
     private List<Inventory> usedParts;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
+    }
+
+    public String getIssueDescription() {
+        return issueDescription;
+    }
+
+    public void setIssueDescription(String issueDescription) {
+        this.issueDescription = issueDescription;
+    }
+
+    public byte[] getDevicePhoto() {
+        return devicePhoto;
+    }
+
+    public void setDevicePhoto(byte[] devicePhoto) {
+        this.devicePhoto = devicePhoto;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Technician getTechnician() {
+        return technician;
+    }
+
+    public void setTechnician(Technician technician) {
+        this.technician = technician;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+    }
+
+    public List<Inventory> getUsedParts() {
+        return usedParts;
+    }
+
+    public void setUsedParts(List<Inventory> usedParts) {
+        this.usedParts = usedParts;
+    }
 }
 

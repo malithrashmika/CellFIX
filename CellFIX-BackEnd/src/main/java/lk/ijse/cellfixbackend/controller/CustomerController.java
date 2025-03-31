@@ -3,8 +3,8 @@ package lk.ijse.cellfixbackend.controller;
 import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.dto.ResponseDTO;
 import lk.ijse.cellfixbackend.entity.Customer;
-import lk.ijse.cellfixbackend.exception.CustomerAlreadyExistsException;
-import lk.ijse.cellfixbackend.exception.CustomerNotFoundException;
+import lk.ijse.cellfixbackend.exception.AlreadyExistsException;
+import lk.ijse.cellfixbackend.exception.NotFoundException;
 import lk.ijse.cellfixbackend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/customer")
+@CrossOrigin
 public class CustomerController {
 
     @Autowired
@@ -26,7 +27,7 @@ public class CustomerController {
         try {
             Customer savedCustomer = customerService.save(customerDTO);
             return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
-        } catch (CustomerAlreadyExistsException e) {
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -40,7 +41,7 @@ public class CustomerController {
         try {
             customerService.delete(phoneNumber);
             return new ResponseEntity<>("Customer deleted successfully.", HttpStatus.OK);
-        } catch (CustomerNotFoundException e) {
+        } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

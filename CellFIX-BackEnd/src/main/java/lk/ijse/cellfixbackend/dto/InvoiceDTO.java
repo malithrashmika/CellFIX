@@ -6,18 +6,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvoiceDTO {
-    private Long id;
+    private int invoice_id;
+    private int repairJobId;
     private String invoiceDate;
     private double totalAmount;
     private String customerName;
-    private String deviceModel;
 
-    public Long getId() {
-        return id;
+    public int getRepairJobId() {
+        return repairJobId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRepairJobId(int repairJobId) {
+        this.repairJobId = repairJobId;
+    }
+
+    private String deviceModel;
+
+    public int getInvoice_id() {
+        return invoice_id;
+    }
+
+    public void setInvoice_id(int invoice_id) {
+        this.invoice_id = invoice_id;
     }
 
     public String getInvoiceDate() {

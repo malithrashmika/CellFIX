@@ -3,8 +3,8 @@ package lk.ijse.cellfixbackend.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.entity.Customer;
-import lk.ijse.cellfixbackend.exception.CustomerAlreadyExistsException;
-import lk.ijse.cellfixbackend.exception.CustomerNotFoundException;
+import lk.ijse.cellfixbackend.exception.AlreadyExistsException;
+import lk.ijse.cellfixbackend.exception.NotFoundException;
 import lk.ijse.cellfixbackend.repo.CustomerRepo;
 import lk.ijse.cellfixbackend.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer save(CustomerDTO customerDTO) {
         if (customerRepo.existsById(Integer.valueOf(customerDTO.getPhoneNumber()))) {
-            throw new CustomerAlreadyExistsException("Customer with phone number " + customerDTO.getPhoneNumber() + " already exists.");
+            throw new AlreadyExistsException("Customer with phone number " + customerDTO.getPhoneNumber() + " already exists.");
         }
 
         // Convert DTO to entity
@@ -60,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void delete(String phoneNumber) {
         Customer customer = customerRepo.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer with phone number " + phoneNumber + " not found."));
+                .orElseThrow(() -> new NotFoundException("Customer with phone number " + phoneNumber + " not found."));
 
         // Delete customer
         customerRepo.delete(customer);

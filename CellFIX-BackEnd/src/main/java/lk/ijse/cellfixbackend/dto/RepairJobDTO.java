@@ -1,26 +1,31 @@
 package lk.ijse.cellfixbackend.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
 
+
 public class RepairJobDTO {
-    private String invoiceNumber;
+    private int invoice_id;
     private String deviceModel;
     private String issueDescription;
+    private MultipartFile devicePhoto;
     private String status;
     private String createdAt;
-    private String customerName; // Extracted from Customer entity
-    private String technicianName; // Extracted from Technician entity
+    private String phoneNumber; // Extracted from Customer entity
+    private int technician_id; // Extracted from TechnicianService entity
 
-    public String getInvoiceNumber() {
-        return invoiceNumber;
+    public int getInvoice_id() {
+        return invoice_id;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
+    public void setInvoice_id(int invoice_id) {
+        this.invoice_id = invoice_id;
     }
 
     public String getDeviceModel() {
@@ -39,6 +44,14 @@ public class RepairJobDTO {
         this.issueDescription = issueDescription;
     }
 
+    public MultipartFile getDevicePhoto() {
+        return devicePhoto;
+    }
+
+    public void setDevicePhoto(MultipartFile devicePhoto) {
+        this.devicePhoto = devicePhoto;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -55,20 +68,20 @@ public class RepairJobDTO {
         this.createdAt = createdAt;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getTechnicianName() {
-        return technicianName;
+    public int getTechnician_id() {
+        return technician_id;
     }
 
-    public void setTechnicianName(String technicianName) {
-        this.technicianName = technicianName;
+    public void setTechnician_id(int technician_id) {
+        this.technician_id = technician_id;
     }
 }
 

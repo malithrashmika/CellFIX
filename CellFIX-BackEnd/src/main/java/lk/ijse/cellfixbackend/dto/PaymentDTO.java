@@ -1,22 +1,22 @@
 package lk.ijse.cellfixbackend.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentDTO {
-    private Long id;
+    private int id;
     private double amountPaid;
     private String paymentDate;
     private String paymentMethod;
+    private int invoiceId; // Added invoice ID
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -43,5 +43,12 @@ public class PaymentDTO {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-}
 
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+}

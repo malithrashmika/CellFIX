@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 @Table(name = "inventory")
 public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String partName;
     private int stockQuantity;
@@ -23,5 +22,45 @@ public class Inventory {
 
     @ManyToMany(mappedBy = "usedParts")
     private List<RepairJob> repairsUsedIn;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPartName() {
+        return partName;
+    }
+
+    public void setPartName(String partName) {
+        this.partName = partName;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public List<RepairJob> getRepairsUsedIn() {
+        return repairsUsedIn;
+    }
+
+    public void setRepairsUsedIn(List<RepairJob> repairsUsedIn) {
+        this.repairsUsedIn = repairsUsedIn;
+    }
 }
 
