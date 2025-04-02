@@ -2,10 +2,12 @@ package lk.ijse.cellfixbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -20,8 +22,9 @@ public class Inventory {
     private int stockQuantity;
     private double price;
 
-    @ManyToMany(mappedBy = "usedParts")
-    private List<RepairJob> repairsUsedIn;
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
+    private List<RepairInventory> repairInventories;
+
 
     public int getId() {
         return id;
@@ -55,12 +58,11 @@ public class Inventory {
         this.price = price;
     }
 
-    public List<RepairJob> getRepairsUsedIn() {
-        return repairsUsedIn;
+    public List<RepairInventory> getRepairInventories() {
+        return repairInventories;
     }
 
-    public void setRepairsUsedIn(List<RepairJob> repairsUsedIn) {
-        this.repairsUsedIn = repairsUsedIn;
+    public void setRepairInventories(List<RepairInventory> repairInventories) {
+        this.repairInventories = repairInventories;
     }
 }
-

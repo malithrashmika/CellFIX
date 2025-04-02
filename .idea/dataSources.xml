@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="cellfix-database@localhost" uuid="d7939c4d-dcbe-4976-b19c-20434953f9df">
+    <data-source source="LOCAL" name="cellfix-db@localhost" uuid="4d876174-245f-4403-bd1a-dab4b29170a3">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/cellfix-database</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/cellfix-db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

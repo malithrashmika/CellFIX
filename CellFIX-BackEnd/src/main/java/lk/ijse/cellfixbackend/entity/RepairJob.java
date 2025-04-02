@@ -35,13 +35,9 @@ public class RepairJob {
     @OneToOne(mappedBy = "repairJob", cascade = CascadeType.ALL)
     private Invoice invoice;
 
-    @ManyToMany
-    @JoinTable(
-            name = "repair_inventory",
-            joinColumns = @JoinColumn(name = "repair_id"),
-            inverseJoinColumns = @JoinColumn(name = "inventory_id")
-    )
-    private List<Inventory> usedParts;
+    @OneToMany(mappedBy = "repairJob", cascade = CascadeType.ALL)
+    private List<RepairInventory> repairInventories;
+
 
     public int getId() {
         return id;
@@ -115,12 +111,12 @@ public class RepairJob {
         this.invoice = invoice;
     }
 
-    public List<Inventory> getUsedParts() {
-        return usedParts;
+    public List<RepairInventory> getRepairInventories() {
+        return repairInventories;
     }
 
-    public void setUsedParts(List<Inventory> usedParts) {
-        this.usedParts = usedParts;
+    public void setRepairInventories(List<RepairInventory> repairInventories) {
+        this.repairInventories = repairInventories;
     }
 }
 

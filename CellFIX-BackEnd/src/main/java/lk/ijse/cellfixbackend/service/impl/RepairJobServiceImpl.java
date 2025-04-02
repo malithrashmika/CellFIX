@@ -2,10 +2,7 @@ package lk.ijse.cellfixbackend.service.impl;
 
 import lk.ijse.cellfixbackend.dto.RepairJobDTO;
 import lk.ijse.cellfixbackend.entity.*;
-import lk.ijse.cellfixbackend.repo.CustomerRepo;
-import lk.ijse.cellfixbackend.repo.InvoiceRepo;
-import lk.ijse.cellfixbackend.repo.RepairJobRepo;
-import lk.ijse.cellfixbackend.repo.TechnicianRepo;
+import lk.ijse.cellfixbackend.repo.*;
 import lk.ijse.cellfixbackend.service.RepairJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,8 @@ public class RepairJobServiceImpl implements RepairJobService {
     TechnicianRepo technicianRepo;
     @Autowired
     InvoiceRepo invoiceRepo;
+    @Autowired
+    RepairInventoryRepo repairInventoryRepo;
 
     @Override
     public RepairJob assignRepairJob(RepairJobDTO repairJobDTO) throws IOException {
@@ -65,11 +64,12 @@ public class RepairJobServiceImpl implements RepairJobService {
                 invoice.setInvoiceDate(LocalDateTime.now());
 
                 // Calculate total cost from used parts
-                double totalAmount = 0;
-                for (Inventory part : repairJob.getUsedParts()) {
-                    totalAmount += part.getPrice();
+                double totalCost = 0;
+                for (RepairInventory repairInventory : repairJob.getRepairInventories()) {
+                    totalCost += repairInventory.getQuantityUsed() * repairInventory.getInventory().getPrice();
                 }
-                invoice.setTotalAmount(totalAmount);
+                invoice.setTotalAmount(totalCost);
+
 
                 // Save the invoice
                 invoiceRepo.save(invoice);
