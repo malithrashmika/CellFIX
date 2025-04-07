@@ -8,4 +8,5 @@ import java.io.IOException;
 public interface RepairJobService {
     RepairJob assignRepairJob(RepairJobDTO repairJobDTO) throws IOException;
     RepairJob completeRepairJob(int repairJobId);
+    void updateRepairJobStatus(int jobId, String status);
 }

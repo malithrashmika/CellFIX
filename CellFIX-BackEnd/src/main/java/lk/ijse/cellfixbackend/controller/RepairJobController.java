@@ -1,13 +1,12 @@
 package lk.ijse.cellfixbackend.controller;
 
 import lk.ijse.cellfixbackend.dto.RepairJobDTO;
+import lk.ijse.cellfixbackend.entity.RepairJob;
 import lk.ijse.cellfixbackend.service.RepairJobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -64,6 +63,24 @@ public class RepairJobController {
 //            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
 //        }
 //    }
+
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<?> completeRepairJob(@PathVariable int id) {
+        System.out.println("Received request to complete repair job with ID: " + id);
+
+        RepairJob updatedJob = repairJobService.completeRepairJob(id);
+
+        if (updatedJob == null) {
+            System.out.println("Repair job not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repair job not found");
+        }
+
+
+        System.out.println("Repair job completed successfully!");
+        return ResponseEntity.ok(updatedJob);
+    }
+
+
 
 
 }
