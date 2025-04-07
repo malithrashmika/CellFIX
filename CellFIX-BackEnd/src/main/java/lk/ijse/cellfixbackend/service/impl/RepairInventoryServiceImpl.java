@@ -32,6 +32,14 @@ public class RepairInventoryServiceImpl implements RepairInventoryService {
         Inventory inventory = inventoryRepo.findById(repairInventoryDTO.getInventoryId())
                 .orElseThrow(() -> new RuntimeException("Inventory Item Not Found"));
 
+        // Deduct stock immediately when assigning parts
+        int newStock = inventory.getStockQuantity() - repairInventoryDTO.getQuantityUsed();
+        if (newStock < 0) {
+            throw new RuntimeException("Not enough stock for part: " + inventory.getPartName());
+        }
+        inventory.setStockQuantity(newStock);
+        inventoryRepo.save(inventory);
+
         RepairInventory repairInventory = new RepairInventory();
         repairInventory.setRepairJob(repairJob);
         repairInventory.setInventory(inventory);
@@ -41,5 +49,6 @@ public class RepairInventoryServiceImpl implements RepairInventoryService {
         RepairInventory savedRepairInventory = repairInventoryRepo.save(repairInventory);
         return modelMapper.map(savedRepairInventory, RepairInventoryDTO.class);
     }
+
 }
 
