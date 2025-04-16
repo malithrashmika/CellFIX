@@ -1,30 +1,20 @@
 package lk.ijse.cellfixbackend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-
-@NoArgsConstructor
 
 public class CustomerDTO {
-    private String phoneNumber;
     private String name;
     private String email;
+    private String phoneNumber;
     private String address;
 
-    public CustomerDTO(String phoneNumber, String name, String email, String address) {
-        this.phoneNumber = phoneNumber;
+    public CustomerDTO() {
+    }
+
+    public CustomerDTO( String name, String email, String phoneNumber, String address) {
         this.name = name;
         this.email = email;
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 
     public String getName() {
@@ -41,6 +31,14 @@ public class CustomerDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getAddress() {

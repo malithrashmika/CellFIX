@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -25,8 +26,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer save(CustomerDTO customerDTO) {
-        if (customerRepo.existsById(Integer.valueOf(customerDTO.getPhoneNumber()))) {
-            throw new AlreadyExistsException("Customer with phone number " + customerDTO.getPhoneNumber() + " already exists.");
+
+
+        if (customerDTO.getPhoneNumber() != null) {
+            if (customerRepo.existsByPhoneNumber(customerDTO.getPhoneNumber())) {
+                throw new AlreadyExistsException("Customer with phone number " + customerDTO.getPhoneNumber() + " already exists.");
+            }
+        } else {
+            throw new IllegalArgumentException("Phone number cannot be null");
         }
 
         // Convert DTO to entity
@@ -68,7 +75,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> findAll() {
-        return List.of();
+        List<Customer> customers = customerRepo.findAll();
+
+        return customers.stream()
+                .map(customer -> modelMapper.map(customer, CustomerDTO.class))
+                .collect(Collectors.toList());
     }
 
 }

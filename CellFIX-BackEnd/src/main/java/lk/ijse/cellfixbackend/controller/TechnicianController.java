@@ -1,6 +1,7 @@
 package lk.ijse.cellfixbackend.controller;
 
 
+import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.dto.TechnicianDTO;
 import lk.ijse.cellfixbackend.entity.Technician;
 import lk.ijse.cellfixbackend.exception.AlreadyExistsException;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/technician")
@@ -45,5 +48,11 @@ public class TechnicianController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TechnicianDTO>> getAllTechnicians() {
+        List<TechnicianDTO> technicians = technicianService.findAll();
+        return new ResponseEntity<>(technicians, HttpStatus.OK);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="cellfix-db@localhost" uuid="4d876174-245f-4403-bd1a-dab4b29170a3">
+    <data-source source="LOCAL" name="cellfix-db@localhost" uuid="cff49e8b-a988-40f9-8037-124537166181">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

@@ -1,6 +1,7 @@
 package lk.ijse.cellfixbackend.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.dto.TechnicianDTO;
 import lk.ijse.cellfixbackend.entity.Customer;
 import lk.ijse.cellfixbackend.entity.Technician;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class TechnicianServiceImpl implements TechnicianService {
@@ -71,6 +74,10 @@ public class TechnicianServiceImpl implements TechnicianService {
 
     @Override
     public List<TechnicianDTO> findAll() {
-        return List.of();
+        List<Technician> technicians = technicianRepo.findAll();
+
+        return technicians.stream()
+                .map(technician-> modelMapper.map( technician, TechnicianDTO.class))
+                .collect(Collectors.toList());
     }
 }

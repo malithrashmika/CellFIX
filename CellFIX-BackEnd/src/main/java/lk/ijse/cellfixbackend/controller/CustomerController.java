@@ -11,9 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/customer")
-@CrossOrigin
 public class CustomerController {
 
     @Autowired
@@ -25,6 +26,7 @@ public class CustomerController {
     @PostMapping("/save")
     public ResponseEntity<?> saveCustomer(@RequestBody CustomerDTO customerDTO) {
         try {
+            System.out.println("DTO phone: " + customerDTO.getPhoneNumber());
             Customer savedCustomer = customerService.save(customerDTO);
             return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
         } catch (AlreadyExistsException e) {
@@ -44,6 +46,12 @@ public class CustomerController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        List<CustomerDTO> customers = customerService.findAll();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
 }
