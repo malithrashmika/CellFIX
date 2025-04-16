@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Repairs - Royal Devices</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-5">Repair Jobs</h2>
+    <!-- Button to Open the Add Repair Job Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRepairModal">
+        Add New Repair Job
+    </button>
+    <table class="table table-striped mt-3" id="repairJobsTable">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Device Model</th>
+            <th>Issue Description</th>
+            <th>Status</th>
+            <th>Customer Phone</th>
+            <th>Technician</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Repair jobs will be dynamically added here via AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Repair Modal -->
+<div class="modal fade" id="addRepairModal" tabindex="-1" aria-labelledby="addRepairModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRepairModalLabel">Add Repair Job</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRepairForm">
+                    <div class="mb-3">
+                        <label for="deviceModel" class="form-label">Device Model</label>
+                        <input type="text" class="form-control" id="deviceModel" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="issueDescription" class="form-label">Issue Description</label>
+                        <textarea class="form-control" id="issueDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control" id="status" required>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerPhone" class="form-label">Customer Phone</label>
+                        <select class="form-control" id="customerPhone" required>
+                            <!-- Customer phone numbers will be populated dynamically here -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="technicianId" class="form-label">Technician ID</label>
+                        <input type="number" class="form-control" id="technicianId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="devicePhoto" class="form-label">Upload Device Photo</label>
+                        <input type="file" class="form-control" id="devicePhoto">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Repair Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="js/repair.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login - CellFIX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-light min-vh-100 d-flex align-items-center">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center mb-5">
+                <h2 class="mt-5 mb-3 fw-bold">Sign in to your account</h2>
+                <p class="text-muted">
+                    Or <a href="register.html" class="text-primary text-decoration-none">create a new account</a>
+                </p>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-body p-4 p-sm-5">
+                    <form id="loginForm">
+                        <div class="mb-4">
+                            <label for="email" class="form-label">Email address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" required/>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" required/>
+                                <button type="button" class="btn btn-outline-secondary toggle-password">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe"/>
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" class="text-primary text-decoration-none">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-4">Sign in</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        // Toggle password visibility
+        $('.toggle-password').on('click', function () {
+            const passwordInput = $('#password');
+            const icon = $('#toggleIcon');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            icon.toggleClass('bi-eye bi-eye-slash');
+        });
+
+        // Handle login form
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
+
+            const email = $('#email').val().trim();
+            const password = $('#password').val().trim();
+
+            if (!email || !password) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Fields',
+                    text: 'Please enter both email and password.'
+                });
+                return;
+            }
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/auth/authenticate',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email: email, password: password }),
+                success: function (response) {
+                    console.log("Login response:", response); // Debug
+
+                    const token = response?.data?.token;
+                    const email = response?.data?.email;
+
+                    if (token) {
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('user', JSON.stringify({ email }));
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            text: 'Redirecting to dashboard...',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            localStorage.setItem('authToken', response.data.token);
+                            console.log(localStorage.getItem('authToken'));
+                            location.replace('App.html'); // Use replace to prevent back button to login
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: response.message || 'Invalid credentials.'
+                        });
+                    }
+                }
+                ,
+                error: function (xhr) {
+                    console.error("Login error response:", xhr); // DEBUG
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: xhr.responseJSON?.message || 'Server error. Please try again.'
+                    });
+                }
+
+                ,
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: xhr.responseJSON?.message || 'Server error. Please try again.'
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
