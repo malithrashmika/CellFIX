@@ -1,6 +1,7 @@
 package lk.ijse.cellfixbackend.controller;
 
 
+import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.dto.InventoryDTO;
 import lk.ijse.cellfixbackend.dto.TechnicianDTO;
 import lk.ijse.cellfixbackend.entity.Inventory;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/inventory")
@@ -45,5 +48,11 @@ public class InventoryController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InventoryDTO>> getAllInventory() {
+        List<InventoryDTO> items = inventoryService.findAll();
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

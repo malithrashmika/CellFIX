@@ -53,5 +53,9 @@ public class CustomerController {
         List<CustomerDTO> customers = customerService.findAll();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
+    @GetMapping("/phones")
+    public List<String> getAllCustomerPhoneNumbers() {
+        return customerService.getAllPhoneNumbers();
+    }
 
 }

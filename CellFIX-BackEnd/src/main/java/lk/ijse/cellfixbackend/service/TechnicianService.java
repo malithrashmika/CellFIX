@@ -11,4 +11,5 @@ public interface TechnicianService {
     Technician update(int id, TechnicianDTO technicianDTO);
     void delete(int id);
     List<TechnicianDTO> findAll();
+    List<Integer> getAllids();
 }

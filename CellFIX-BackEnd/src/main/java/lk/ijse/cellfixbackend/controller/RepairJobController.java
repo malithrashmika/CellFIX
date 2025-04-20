@@ -1,6 +1,7 @@
 package lk.ijse.cellfixbackend.controller;
 
 import lk.ijse.cellfixbackend.dto.RepairJobDTO;
+import lk.ijse.cellfixbackend.dto.RepairJobResponseDTO;
 import lk.ijse.cellfixbackend.entity.RepairJob;
 import lk.ijse.cellfixbackend.service.RepairJobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/repairjob")
@@ -22,7 +25,6 @@ public class RepairJobController {
     @PostMapping("/assign")
     public ResponseEntity<String> assignRepairJob(
 //            @RequestBody RepairJobDTO repairJobDTO
-            @RequestPart("invoice_id") String invoice_id,
             @RequestPart("deviceModel") String deviceModel,
             @RequestPart("issueDescription") String issueDescription,
             @RequestPart("status") String status,
@@ -34,7 +36,6 @@ public class RepairJobController {
 //        System.out.println(repairJobDTO.getDevicePhoto());
         RepairJobDTO repairJobDTO = new RepairJobDTO();
 
-        repairJobDTO.setInvoice_id(Integer.parseInt(invoice_id));
         repairJobDTO.setDeviceModel(deviceModel);
         repairJobDTO.setIssueDescription(issueDescription);
         repairJobDTO.setStatus(status);
@@ -80,7 +81,8 @@ public class RepairJobController {
         return ResponseEntity.ok(updatedJob);
     }
 
-
-
-
+    @GetMapping
+    public ResponseEntity<List<RepairJobResponseDTO>> getAllRepairJobs() {
+        return ResponseEntity.ok(repairJobService.getAllRepairJobs());
+    }
 }

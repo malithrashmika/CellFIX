@@ -3,6 +3,7 @@ package lk.ijse.cellfixbackend.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lk.ijse.cellfixbackend.dto.RepairJobDTO;
+import lk.ijse.cellfixbackend.dto.RepairJobResponseDTO;
 import lk.ijse.cellfixbackend.entity.*;
 import lk.ijse.cellfixbackend.repo.*;
 import lk.ijse.cellfixbackend.service.RepairJobService;
@@ -46,8 +47,6 @@ public class RepairJobServiceImpl implements RepairJobService {
         // Fetch Technician
         Optional<Technician> technician = technicianRepo.findById(repairJobDTO.getTechnician_id());
         technician.ifPresent(repairJob::setTechnician);
-        Optional<Invoice> invoice = invoiceRepo.findById(repairJobDTO.getInvoice_id());
-        invoice.ifPresent(repairJob::setInvoice);
 
         // Convert image
         MultipartFile file = repairJobDTO.getDevicePhoto();
@@ -87,7 +86,9 @@ public class RepairJobServiceImpl implements RepairJobService {
             totalCost += repairInventory.getQuantityUsed() * repairInventory.getInventory().getPrice();
         }
 
+
         invoice.setTotalAmount(totalCost);
+        System.out.println("total cost: " + totalCost);
         invoiceRepo.save(invoice);
 
         repairJob.setInvoice(invoice);
@@ -105,5 +106,38 @@ public class RepairJobServiceImpl implements RepairJobService {
         RepairJob repairJob = repairJobRepo.findById(jobId).orElseThrow(() -> new RuntimeException("Not found"));
         repairJob.setStatus(status);
         entityManager.flush(); // Force Hibernate to push changes to DB
+    }
+
+
+    @Override
+    public List<RepairJobResponseDTO> getAllRepairJobs() {
+        List<RepairJob> jobs = repairJobRepo.findAll();
+
+        return jobs.stream().map(job -> {
+            RepairJobResponseDTO dto = new RepairJobResponseDTO();
+            dto.setId(job.getId());
+            dto.setDeviceModel(job.getDeviceModel());
+            dto.setIssueDescription(job.getIssueDescription());
+            dto.setStatus(job.getStatus());
+            dto.setCreatedAt(job.getCreatedAt() != null ? job.getCreatedAt().toString() : null);
+
+            if (job.getCustomer() != null) {
+                dto.setPhoneNumber(job.getCustomer().getPhoneNumber());
+            } else {
+                dto.setPhoneNumber(null); // or "N/A"
+            }
+            if (job.getTechnician() != null) {
+                dto.setTechnician_id(job.getTechnician().getId());
+            } else {
+                dto.setTechnician_id(0); // or "N/A"
+            }
+
+            if (job.getDevicePhoto() != null) {
+                String base64 = java.util.Base64.getEncoder().encodeToString(job.getDevicePhoto());
+                dto.setPhotoBase64(base64);
+            }
+
+            return dto;
+        }).toList();
     }
 }

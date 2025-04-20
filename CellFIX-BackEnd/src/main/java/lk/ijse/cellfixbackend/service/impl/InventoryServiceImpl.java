@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class InventoryServiceImpl implements InventoryService {
     @Autowired
@@ -61,8 +63,13 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryRepo.delete(inventory);
     }
 
-    @Override
     public List<InventoryDTO> findAll() {
-        return List.of();
+        // Fetch inventory items from the repository
+        List<Inventory> inventoryList = inventoryRepo.findAll();
+
+        // Use ModelMapper to convert Inventory entities to InventoryDTOs
+        return inventoryList.stream()
+                .map(inventory -> modelMapper.map(inventory, InventoryDTO.class))
+                .collect(Collectors.toList());
     }
 }

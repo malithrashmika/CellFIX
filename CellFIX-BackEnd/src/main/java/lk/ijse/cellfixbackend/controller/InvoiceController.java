@@ -2,6 +2,7 @@ package lk.ijse.cellfixbackend.controller;
 
 import lk.ijse.cellfixbackend.dto.InvoiceDTO;
 import lk.ijse.cellfixbackend.service.InvoiceService;
+import lk.ijse.cellfixbackend.service.Invoice_Genarator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceService invoiceService;
+    @Autowired
+    private Invoice_Genarator invoice_genrator;
 
     // Create a new invoice
     @PostMapping("/save")
@@ -55,4 +58,6 @@ public class InvoiceController {
         invoiceService.deleteInvoice(invoiceId);
         return ResponseEntity.noContent().build();
     }
+
+
 }

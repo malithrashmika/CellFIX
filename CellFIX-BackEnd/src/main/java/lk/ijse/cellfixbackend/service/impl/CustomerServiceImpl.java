@@ -82,4 +82,12 @@ public class CustomerServiceImpl implements CustomerService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getAllPhoneNumbers() {
+        return customerRepo.findAll()
+                .stream()
+                .map(Customer::getPhoneNumber)
+                .collect(Collectors.toList());
+    }
+
+
 }

@@ -1,9 +1,7 @@
 package lk.ijse.cellfixbackend.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import lk.ijse.cellfixbackend.dto.CustomerDTO;
 import lk.ijse.cellfixbackend.dto.TechnicianDTO;
-import lk.ijse.cellfixbackend.entity.Customer;
 import lk.ijse.cellfixbackend.entity.Technician;
 import lk.ijse.cellfixbackend.exception.AlreadyExistsException;
 import lk.ijse.cellfixbackend.exception.NotFoundException;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,11 +55,6 @@ public class TechnicianServiceImpl implements TechnicianService {
 
         return technicianRepo.save(existingTechnician);
     }
-
-
-
-
-
     @Override
     public void delete(int id) {
         Technician technician = technicianRepo.findById(id)
@@ -71,13 +63,19 @@ public class TechnicianServiceImpl implements TechnicianService {
        technicianRepo.delete(technician);
 
     }
-
     @Override
     public List<TechnicianDTO> findAll() {
         List<Technician> technicians = technicianRepo.findAll();
 
         return technicians.stream()
                 .map(technician-> modelMapper.map( technician, TechnicianDTO.class))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<Integer> getAllids() {
+        return technicianRepo.findAll()
+                .stream()
+                .map(Technician::getId)
                 .collect(Collectors.toList());
     }
 }

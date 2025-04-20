@@ -14,6 +14,25 @@ public class RepairInventoryDTO {
     private String repairStatus;
 
 
+    private String partName;
+    private double unitPrice;
+
+    public String getPartName() {
+        return partName;
+    }
+
+    public void setPartName(String partName) {
+        this.partName = partName;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
     public int getId() {
         return id;
     }

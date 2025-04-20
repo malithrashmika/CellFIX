@@ -55,4 +55,8 @@ public class TechnicianController {
         List<TechnicianDTO> technicians = technicianService.findAll();
         return new ResponseEntity<>(technicians, HttpStatus.OK);
     }
+    @GetMapping("/ids")
+    public List<Integer> getAllTechnicianids() {
+        return technicianService.getAllids();
+    }
 }
