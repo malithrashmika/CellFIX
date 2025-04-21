@@ -1,56 +1,44 @@
 package lk.ijse.cellfixbackend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-@NoArgsConstructor
-@AllArgsConstructor
 
 @Entity
-@Table(name = "invoices")
+@Table(name = "invoice")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int invoice_id;
-
-    private double totalAmount;
-    private LocalDateTime invoiceDate;
+    private int invoiceId;
 
     @OneToOne
-    @JoinColumn(name = "repair_id")
+    @JoinColumn(name = "repair_job_id", nullable = false, unique = true)
     private RepairJob repairJob;
 
-    private String status;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<Payment> payments;
+    @Column(nullable = false)
+    private LocalDateTime invoiceDate;
 
-    public int getInvoice_id() {
-        return invoice_id;
+    @Column(nullable = false)
+    private double totalAmount;
+
+    @Column(name = "customer_name", nullable = false)
+    private String customerName;
+
+    @Column(name = "device_model", nullable = false)
+    private String deviceModel;
+
+    public int getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setInvoice_id(int invoice_id) {
-        this.invoice_id = invoice_id;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public LocalDateTime getInvoiceDate() {
-        return invoiceDate;
-    }
-
-    public void setInvoiceDate(LocalDateTime invoiceDate) {
-        this.invoiceDate = invoiceDate;
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public RepairJob getRepairJob() {
@@ -61,19 +49,35 @@ public class Invoice {
         this.repairJob = repairJob;
     }
 
-    public List<Payment> getPayments() {
-        return payments;
+    public LocalDateTime getInvoiceDate() {
+        return invoiceDate;
     }
 
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
-    public String getStatus() {
-        return status;
+    public void setInvoiceDate(LocalDateTime invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
     }
 }
-

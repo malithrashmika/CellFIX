@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Lucide Icons -->
     <link rel="stylesheet" href="https://unpkg.com/lucide@latest">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .search-icon {
             position: absolute;
@@ -19,52 +21,69 @@
     </style>
 </head>
 <body>
-<div class="container-fluid py-4">
-    <div class="card shadow">
-        <div class="card-header border-bottom">
-            <div class="row align-items-center">
-                <div class="col-md-8 mb-3 mb-md-0">
-                    <div class="position-relative">
-                        <i data-lucide="search" class="search-icon"></i>
-                        <input
-                                type="text"
-                                class="form-control ps-4"
-                                placeholder="Search technicians..."
-                                id="searchInput"
-                        >
-                    </div>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addTechnicianModal"
-                    >
-                        <i data-lucide="plus" class="me-1"></i>
-                        Add Technician
-                    </button>
-                </div>
-            </div>
-        </div>
+<!--<div class="container-fluid py-4">-->
+<!--    <div class="card shadow">-->
+<!--        <div class="card-header border-bottom">-->
+<!--            <div class="row align-items-center">-->
+<!--                <div class="col-md-8 mb-3 mb-md-0">-->
+<!--                    <div class="position-relative">-->
+<!--                        <i data-lucide="search" class="search-icon"></i>-->
+<!--                        <input-->
+<!--                                type="text"-->
+<!--                                class="form-control ps-4"-->
+<!--                                placeholder="Search technicians..."-->
+<!--                                id="searchInput"-->
+<!--                        >-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4 text-md-end">-->
+<!--                    <button-->
+<!--                            class="btn btn-primary"-->
+<!--                            data-bs-toggle="modal"-->
+<!--                            data-bs-target="#addTechnicianModal"-->
+<!--                    >-->
+<!--                        <i data-lucide="plus" class="me-1"></i>-->
+<!--                        Add Technician-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Expertise</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="techniciansTableBody">
-                    <!-- Technicians will be inserted here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<!--        <div class="card-body">-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table table-hover">-->
+<!--                    <thead class="table-light">-->
+<!--                    <tr>-->
+<!--                        <th>Name</th>-->
+<!--                        <th>Email</th>-->
+<!--                        <th>Expertise</th>-->
+<!--                        <th>Actions</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody id="techniciansTableBody">-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="container">
+    <h2 class="mt-5">Manage Technicians</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTechnicianModal">Add Technician</button>
+
+    <table class="table table-bordered mt-3">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Expertise</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="techniciansTableBody">
+
+        </tbody>
+    </table>
 </div>
 
 <!-- Add Technician Modal -->
@@ -72,52 +91,31 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Technician</h5>
+                <h5 class="modal-title" id="addTechnicianModalLabel">Add Technician</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="addTechnicianForm">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="technicianName"
-                                required
-                        >
+            <div class="modal-body">
+                <form id="addTechnicianForm">
+                    <div class="form-group">
+                        <label for="technicianName">Name</label>
+                        <input type="text" class="form-control" id="technicianName" required>
                     </div>
-
-
-
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input
-                                type="email"
-                                class="form-control"
-                                id="technicianEmail"
-                                required
-                        >
+                    <div class="form-group">
+                        <label for="technicianEmail">Email</label>
+                        <input type="email" class="form-control" id="technicianEmail" required>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Expertise</label>
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="technicianExpert"
-                                required
-                        >
+                    <div class="form-group">
+                        <label for="technicianExpert">Experties</label>
+                        <input type="text" class="form-control" id="technicianExpert" required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <br>
                     <button type="submit" class="btn btn-primary">Add Technician</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Lucide Icons JS -->
@@ -134,7 +132,7 @@
 
             const name = $('#technicianName').val().trim();
             const email = $('#technicianEmail').val().trim();
-            const expert = $('#technicianExpert').val().trim();
+            const expertise = $('#technicianExpert').val().trim();
 
             const token = localStorage.getItem('authToken');
             if (!token) {
@@ -145,7 +143,7 @@
             $.ajax({
                 url: 'http://localhost:8080/api/v1/technician/save',
                 type: 'POST',
-                data: JSON.stringify({ name, email, expert }),
+                data: JSON.stringify({ name, email, expertise}),
                 contentType: 'application/json',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -186,7 +184,7 @@
                         <tr>
                             <td>${tech.name}</td>
                             <td>${tech.email}</td>
-                            <td>${tech.expert}</td>
+                            <td>${tech.expertise}</td>
                             <td>
                                 <button class="btn btn-danger btn-sm" onclick="deleteTechnician('${tech.id}')">Delete</button>
                             </td>

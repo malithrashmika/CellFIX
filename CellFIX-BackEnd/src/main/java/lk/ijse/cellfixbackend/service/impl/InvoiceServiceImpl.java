@@ -1,22 +1,35 @@
 package lk.ijse.cellfixbackend.service.impl;
 
 import lk.ijse.cellfixbackend.dto.InvoiceDTO;
+import lk.ijse.cellfixbackend.dto.RepairInventoryDTO;
+import lk.ijse.cellfixbackend.entity.Inventory;
 import lk.ijse.cellfixbackend.entity.Invoice;
+import lk.ijse.cellfixbackend.entity.RepairInventory;
 import lk.ijse.cellfixbackend.entity.RepairJob;
+import lk.ijse.cellfixbackend.repo.InventoryRepo;
 import lk.ijse.cellfixbackend.repo.InvoiceRepo;
+import lk.ijse.cellfixbackend.repo.RepairInventoryRepo;
 import lk.ijse.cellfixbackend.repo.RepairJobRepo;
 import lk.ijse.cellfixbackend.service.InvoiceService;
+import lk.ijse.cellfixbackend.service.Invoice_Genarator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
+
+    @Autowired
+    private Invoice_Genarator invoiceGenaratorService;
 
     @Autowired
     private InvoiceRepo invoiceRepo;
@@ -65,7 +78,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (existingInvoice.isPresent()) {
             Invoice invoice = existingInvoice.get();
             invoice.setTotalAmount(invoiceDTO.getTotalAmount());
-            invoice.setInvoiceDate(LocalDateTime.parse(invoiceDTO.getInvoiceDate()));
+            invoice.setInvoiceDate(invoiceDTO.getInvoiceDate());
 
             Invoice updatedInvoice = invoiceRepo.save(invoice);
             return modelMapper.map(updatedInvoice, InvoiceDTO.class);
@@ -79,4 +92,5 @@ public class InvoiceServiceImpl implements InvoiceService {
         Optional<Invoice> invoice = invoiceRepo.findById(invoiceId);
         invoice.ifPresent(invoiceRepo::delete);
     }
+
 }

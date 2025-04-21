@@ -140,4 +140,13 @@ public class RepairJobServiceImpl implements RepairJobService {
             return dto;
         }).toList();
     }
+
+    @Override
+    public void deleteRepairJob(int repairJobId) {
+        RepairJob repairJob = repairJobRepo.findById(repairJobId)
+                .orElseThrow(() -> new RuntimeException("Repair Job not found"));
+
+        repairJobRepo.delete(repairJob);  // Cascade will take care of invoice + inventory
+    }
+
 }

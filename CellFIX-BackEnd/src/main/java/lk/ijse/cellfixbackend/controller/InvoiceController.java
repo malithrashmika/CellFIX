@@ -4,7 +4,7 @@ import lk.ijse.cellfixbackend.dto.InvoiceDTO;
 import lk.ijse.cellfixbackend.service.InvoiceService;
 import lk.ijse.cellfixbackend.service.Invoice_Genarator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,5 +59,16 @@ public class InvoiceController {
         return ResponseEntity.noContent().build();
     }
 
+//    @GetMapping("/download")
+//    public ResponseEntity<byte[]> downloadInvoice() {
+//        byte[] pdfBytes = invoice_genrator.generateInvoicePdf();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_PDF);
+//        headers.setContentDisposition(ContentDisposition.attachment().filename("invoice.pdf").build());
+//        headers.setContentLength(pdfBytes.length);
+//
+//        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+//    }
 
 }

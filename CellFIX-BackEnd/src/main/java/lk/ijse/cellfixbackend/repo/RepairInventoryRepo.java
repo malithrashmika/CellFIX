@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface RepairInventoryRepo extends JpaRepository<RepairInventory,Integer > {
     List<RepairInventory> findByRepairJob(RepairJob repairJob);
+    List<RepairInventory> findByRepairJobId(int repairJobId);
+
 }

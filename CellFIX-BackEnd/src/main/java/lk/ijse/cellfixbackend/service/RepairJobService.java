@@ -12,4 +12,6 @@ public interface RepairJobService {
     RepairJob completeRepairJob(int repairJobId);
     void updateRepairJobStatus(int jobId, String status);
     List<RepairJobResponseDTO> getAllRepairJobs();
+    void deleteRepairJob(int repairJobId);
+
 }

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Repairs - Royal Devices</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-5">Repair Jobs</h2>
+    <!-- Button to Open the Add Repair Job Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRepairModal">
+        Add New Repair Job
+    </button>
+    <table class="table table-striped mt-3" id="repairJobsTable">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Device Model</th>
+            <th>Issue Description</th>
+            <th>Status</th>
+            <th>Customer Phone</th>
+            <th>Technician</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Repair jobs will be dynamically added here via AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Repair Modal -->
+<div class="modal fade" id="addRepairModal" tabindex="-1" aria-labelledby="addRepairModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRepairModalLabel">Add Repair Job</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRepairForm">
+                    <div class="mb-3">
+                        <label for="deviceModel" class="form-label">Device Model</label>
+                        <input type="text" class="form-control" id="deviceModel" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="issueDescription" class="form-label">Issue Description</label>
+                        <textarea class="form-control" id="issueDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control" id="status" required>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerPhone" class="form-label">Customer Phone</label>
+                        <select class="form-control" id="customerPhone" required>
+                            <!-- Customer phone numbers will be populated dynamically here -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="technicianId" class="form-label">Technician ID</label>
+                        <select class="form-control" id="technicianId" required>
+                            <!-- Customer phone numbers will be populated dynamically here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="devicePhoto" class="form-label">Upload Device Photo</label>
+                        <input type="file" class="form-control" id="devicePhoto">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Repair Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Repair Modal -->
+<div class="modal fade" id="completeRepairModal" tabindex="-1" aria-labelledby="completeRepairModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="completeRepairForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Complete Repair & Use Spare Parts</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="completeRepairId">
+
+                    <table class="table table-bordered" id="sparePartsTable">
+                        <thead>
+                        <tr>
+                            <th>Spare Part</th>
+                            <th>Quantity</th>
+                            <th>Repair Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <button type="button" class="btn btn-sm btn-primary" id="addSpareRow">+ Add Part</button>
+                    <hr />
+                    <div class="text-end fw-bold fs-5">Total Cost: Rs. <span id="totalCost">0.00</span></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Complete Repair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script >
+    function loadRepairJobs() {
+        const token = localStorage.getItem("token");
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/repairjob",
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (data) {
+                $('#repairJobsTable tbody').empty();
+
+                data.forEach((job, index) => {
+                    const photo = job.photoBase64
+                        ? `<img src="data:image/jpeg;base64,${job.photoBase64}" class="img-thumbnail" width="100"/>`
+                        : 'No Image';
+
+                    $('#repairJobsTable tbody').append(`
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${job.deviceModel}</td>
+                        <td>${job.issueDescription}</td>
+                        <td>${job.status}</td>
+                        <td>${job.phoneNumber}</td>
+                        <td>${job.technician_id}</td>
+                        <td>${photo}</td>
+<td>
+${(job.status === 'Pending' || job.status === 'In Progress') ? `
+    <button class="btn btn-sm btn-warning" onclick="openCompleteRepairModal(${job.id})">Mark Completed</button>
+    <button class="btn btn-sm btn-secondary" onclick="cancelRepairJob(${job.id})">Cancel Repair</button>
+` : job.status === 'Completed' ? `
+    <span class="badge bg-success">Completed</span>
+    <button class="btn btn-sm btn-info" onclick="downloadInvoice(${job.id})">Download Invoice</button>
+` : job.status === 'Cancelled' ? `
+    <span class="badge bg-secondary">Cancelled</span>
+` : ''}
+</td>
+
+                    </tr>
+                `);
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error loading repair jobs',
+                    text: xhr.responseJSON?.message || 'Something went wrong'
+                });
+            }
+        });
+    }
+    $('#addRepairForm').submit(function (e) {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+
+        const formData = new FormData();
+        formData.append("deviceModel", $('#deviceModel').val());
+        formData.append("issueDescription", $('#issueDescription').val());
+        formData.append("status", $('#status').val());
+        formData.append("phoneNumber", $('#customerPhone').val());
+        formData.append("technician_id", $('#technicianId').val());
+        const photo = $('#devicePhoto')[0].files[0];
+        if (photo) formData.append("devicePhoto", photo);
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/repairjob/assign",
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                $('#addRepairModal').modal('hide');
+                Swal.fire('Completed!', `Invoice forcreated successfully`, 'success');
+                $('#addRepairForm')[0].reset();
+                loadRepairJobs();
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to add repair job',
+                    text: xhr.responseJSON?.message || 'Something went wrong'
+                });
+            }
+        });
+    });
+
+
+    function loadCustomerPhones() {
+        const token = localStorage.getItem("token");
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/customer/phones",
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (phones) {
+                const $select = $('#customerPhone');
+                $select.empty(); // clear previous
+
+                phones.forEach(phone => {
+                    $select.append(`<option value="${phone}">${phone}</option>`);
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to load customer phones',
+                    text: xhr.responseJSON?.message || 'Something went wrong'
+                });
+            }
+        });
+    }
+
+    function loadTechnicians() {
+        const token = localStorage.getItem("token");
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/technician/ids", // Change this to your actual endpoint
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (technicians) {
+                const $select = $('#technicianId'); // ID of the <select> element for technicians
+                $select.empty(); // Clear previous options
+
+                technicians.forEach(tech => {
+                    $select.append(`<option value="${tech}">${tech}</option>`);
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to load technicians',
+                    text: xhr.responseJSON?.message || 'Something went wrong'
+                });
+            }
+        });
+    }
+    let inventoryList = []; // store available parts from backend
+
+    // Load parts from backend
+    function loadInventoryParts() {
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/inventory', // your GET all inventory endpoint
+            method: 'GET',
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+            success: function (data) {
+                inventoryList = data;
+            }
+        });
+    }
+
+    // Open modal
+    function openCompleteRepairModal(repairJobId) {
+        $('#completeRepairId').val(repairJobId);
+        $('#sparePartsTable tbody').empty();
+        $('#totalCost').text('0.00');
+        $('#completeRepairModal').modal('show');
+    }
+
+    // Add row
+    $('#addSpareRow').click(function () {
+        const row = `
+    <tr>
+      <td>
+        <select class="form-select partSelect">
+          ${inventoryList.map(item => `<option value="${item.id}" data-price="${item.price}">${item.partName}</option>`).join('')}
+        </select>
+      </td>
+      <td><input type="number" class="form-control qtyInput" value="1" min="1"></td>
+      <td>
+        <select class="form-select repairStatusSelect">
+          <option value="Used">Used</option>
+          <option value="Replaced">Replaced</option>
+        </select>
+      </td>
+      <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+    </tr>
+  `;
+        $('#sparePartsTable tbody').append(row);
+        calculateTotalCost();
+    });
+
+    // Remove row
+    $('#sparePartsTable').on('click', '.removeRow', function () {
+        $(this).closest('tr').remove();
+        calculateTotalCost();
+    });
+
+    // Recalculate on change
+    $('#sparePartsTable').on('change', '.partSelect, .qtyInput', function () {
+        calculateTotalCost();
+    });
+
+    // Calculate total cost
+    function calculateTotalCost() {
+        let total = 0;
+        $('#sparePartsTable tbody tr').each(function () {
+            const price = parseFloat($(this).find('.partSelect option:selected').data('price'));
+            const qty = parseInt($(this).find('.qtyInput').val());
+            total += price * qty;
+        });
+        $('#totalCost').text(total.toFixed(2));
+    }
+
+    // Submit form
+    $('#completeRepairForm').submit(function (e) {
+        e.preventDefault();
+        const id = $('#completeRepairId').val();
+
+        const partsUsed = [];
+        $('#sparePartsTable tbody tr').each(function () {
+            partsUsed.push({
+                repairId: id, // Use the already defined `id` constant
+                inventoryId: $(this).find('.partSelect').val(),
+                quantityUsed: $(this).find('.qtyInput').val(),
+                repairStatus: $(this).find('.repairStatusSelect').val()
+            });
+
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/repair-inventory/complete-with-parts/${id}`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(partsUsed),
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+            success: function () {
+                Swal.fire('Completed!', `Repair job marked as completed`, 'success');
+                $('#completeRepairModal').modal('hide');
+                $('#sparePartsTable tbody').empty();
+                $('#totalCost').text('0.00');
+                loadRepairJobs();
+                downloadInvoice(id);
+            }
+            ,
+            error: function (err) {
+                Swal.fire('Error', err.responseText, 'error');
+            }
+        });
+    });
+    function cancelRepairJob(repairJobId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will cancel the repair job!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, cancel it!",
+            cancelButtonText: "No",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `http://localhost:8080/api/v1/repair-inventory/cancel?repairJobId=${repairJobId}`,
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    success: function () {
+                        Swal.fire("Cancelled!", "The repair job has been cancelled.", "success");
+                        fetchRepairJobs(); // Refresh list
+                    },
+                    error: function (xhr) {
+                        const errorMessage = xhr.responseJSON?.message || "Something went wrong";
+                        Swal.fire("Error", errorMessage, "error");
+                    }
+                });
+            }
+        });
+    }
+
+
+    function downloadInvoice(repairJobId) {
+        const token = localStorage.getItem("token");
+
+        const downloadUrl = `http://localhost:8080/api/invoices/download?repairJobId=${repairJobId}`;
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", `invoice-${repairJobId}.pdf`);
+        link.setAttribute("target", "_blank");
+
+        // Add Authorization header via fetch if backend requires it
+        fetch(downloadUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to download invoice");
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `invoice-${repairJobId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Could not download invoice. ' + error.message, 'error');
+            });
+    }
+    // Auto-clear forms when modals are closed
+    $('#addRepairJobModal, #completeRepairModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset(); // Reset form fields
+        $(this).find('select').val('').trigger('change'); // Reset select fields
+        $(this).find('.usedPartRow').remove(); // Clear dynamic rows in complete modal
+        $('#repairTotalCost').val(''); // Clear total cost
+        $('#repairJobImagePreview').empty(); // Clear image preview
+    });
+
+
+
+
+
+    $(document).ready(function () {
+        loadCustomerPhones();
+        loadTechnicians();
+        loadRepairJobs(); // if needed
+        loadInventoryParts();
+    });
+
+
+
+
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -85,4 +85,14 @@ public class RepairJobController {
     public ResponseEntity<List<RepairJobResponseDTO>> getAllRepairJobs() {
         return ResponseEntity.ok(repairJobService.getAllRepairJobs());
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteRepairJob(@PathVariable int id) {
+        try {
+            repairJobService.deleteRepairJob(id);
+            return ResponseEntity.ok("Repair job deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }

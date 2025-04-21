@@ -26,7 +26,7 @@ $(document).ready(function() {
 
     // Function to load customers page content
     function loadCustomersPage() {
-        $('#mainContent').load('customer.html');
+        $('#mainContent').load('customers.html');
     }
 
     // Function to load repairs page content
