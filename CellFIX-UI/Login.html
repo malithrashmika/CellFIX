@@ -7,20 +7,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700; /* Gold */
+            text-shadow: 1px 1px 8px #0a0a23; /* dark blacky-blue shadow */
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ffd700;
+        }
+
+        .btn-primary {
+            background-color: #0f172a;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0a0a23;
+        }
+
+        .input-group-text {
+            background-color: #e2e8f0;
+        }
+
+        .toggle-password {
+            border-left: 0;
+        }
+    </style>
 </head>
-<body class="bg-light min-vh-100 d-flex align-items-center">
+<body>
 <div class="container">
     <div class="row justify-content-center">
-          <div class="col-md-8 col-lg-6">
-            <div class="text-center mb-5">
-                <h2 class="mt-5 mb-3 fw-bold">Sign in to your account</h2>
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center mb-4">
+                <div class="brand-logo mt-4">CellFIX</div>
+                <h5 class="text-light mt-3 fw-semibold">Sign in to your account</h5>
                 <p class="text-muted">
-                    Or <a href="register.html" class="text-primary text-decoration-none">create a new account</a>
+                    Or <a href="register.html" class="text-warning text-decoration-none">create a new account</a>
                 </p>
             </div>
 
             <div class="card shadow">
-                <div class="card-body p-4 p-sm-5">
+                <div class="card-body">
                     <form id="loginForm">
                         <div class="mb-4">
                             <label for="email" class="form-label">Email address</label>
@@ -46,10 +94,10 @@
                                 <input type="checkbox" class="form-check-input" id="rememberMe"/>
                                 <label class="form-check-label" for="rememberMe">Remember me</label>
                             </div>
-                            <a href="#" class="text-primary text-decoration-none">Forgot password?</a>
+                            <a href="#" class="text-decoration-none text-warning">Forgot password?</a>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-4">Sign in</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Sign in</button>
                     </form>
                 </div>
             </div>
@@ -58,11 +106,9 @@
     </div>
 </div>
 
-<!-- JavaScript -->
+<!-- JS Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     $(document).ready(function () {
         // Toggle password visibility
@@ -74,7 +120,7 @@
             icon.toggleClass('bi-eye bi-eye-slash');
         });
 
-        // Handle login form
+        // Handle login
         $('#loginForm').submit(function (e) {
             e.preventDefault();
 
@@ -94,28 +140,24 @@
                 url: 'http://localhost:8080/api/v1/auth/authenticate',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ email: email, password: password }),
+                data: JSON.stringify({ email, password }),
                 success: function (response) {
-                    console.log("Login response:", response); // Debug
-
                     const token = response?.data?.token;
                     const email = response?.data?.email;
-                    const role = response?.data?.role; // Get role from response
 
                     if (token) {
                         localStorage.setItem('token', token);
-                        localStorage.setItem('user', JSON.stringify({ email, role }));
+                        localStorage.setItem('user', JSON.stringify({ email }));
 
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Successful!',
-                            text: 'Redirecting...',
+                            text: 'Redirecting to dashboard...',
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            // Redirect based on role
-                                location.replace('App.html');
-
+                            localStorage.setItem('authToken', token);
+                            location.replace('App.html');
                         });
                     } else {
                         Swal.fire({
@@ -124,19 +166,7 @@
                             text: response.message || 'Invalid credentials.'
                         });
                     }
-                }
-
-                ,
-                error: function (xhr) {
-                    console.error("Login error response:", xhr); // DEBUG
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: xhr.responseJSON?.message || 'Server error. Please try again.'
-                    });
-                }
-
-                ,
+                },
                 error: function (xhr) {
                     Swal.fire({
                         icon: 'error',
